@@ -3,10 +3,8 @@ import requests
 
 app = Flask(__name__)
 
-# Base CarInfo API endpoint
 BASE_URL = "https://api-ct.carinfo.app/gw/plt/bffctsvc/api/v1/pages/challan/guest/search"
 
-# Real headers (same as captured request)
 HEADERS = {
     "host": "api-ct.carinfo.app",
     "sec-ch-ua-platform": "\"Android\"",
@@ -28,7 +26,7 @@ HEADERS = {
 
 @app.route('/')
 def home():
-    return jsonify({"status": "ok", "message": "Flask challan API running"})
+    return jsonify({"status": "ok", "message": "Flask challan API running on Vercel"})
 
 @app.route('/challan', methods=['GET'])
 def challan_lookup():
@@ -41,16 +39,8 @@ def challan_lookup():
         resp = requests.get(url, headers=HEADERS)
 
         if resp.status_code == 200:
-            # Full JSON response from CarInfo
-            return jsonify(resp.json())
+            return jsonify(resp.json())  # full JSON response
         else:
-            return jsonify({
-                "error": f"Failed with status {resp.status_code}",
-                "details": resp.text
-            }), resp.status_code
+            return jsonify({"error": f"Failed with status {resp.status_code}", "details": resp.text}), resp.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-# IMPORTANT: Vercel does not need app.run(), but for localhost/Pydroid3 keep this
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
